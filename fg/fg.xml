@@ -1,7 +1,14 @@
 <ActorFrame
 	InitCommand="%melody(function(self)
 		if self:getaux()==1 then return end self:aux(1)
-		function am_bl(mult) return (60 / GAMESTATE:GetCurBPM()) * (mult or 1) end
+
+		local curbpm = function() return 0 end
+		if GAMESTATE.GetCurBPM then
+			curbpm = function() return GAMESTATE:GetCurBPM() end
+		else
+			curbpm = function() return GAMESTATE:GetCurBPS() * 60 end
+		end
+		function am_bl(mult) return (60 / curbpm()) * (mult or 1) end
 
 		init_hooks{'mods init',function()
 			-- lua{'fg/mods', env=modreader.jaezmien}
